@@ -15,6 +15,8 @@ func TestQueue(t *testing.T) {
 
 	assertEqual(t, 3, q.Len())
 
+	assertEqual(t, 2, peekHead(is, q))
+	assertEqual(t, 3, peekTail(is, q))
 	assertEqual(t, 2, popHead(is, q))
 	assertEqual(t, 3, popTail(is, q))
 	assertEqual(t, 1, popHead(is, q))
@@ -55,6 +57,22 @@ func popHead(is []int, q *Queue) int {
 
 func popTail(is []int, q *Queue) int {
 	idx, ok := q.PopTail()
+	if ok {
+		return is[idx]
+	}
+	return 0
+}
+
+func peekHead(is []int, q *Queue) int {
+	idx, ok := q.PeekHead()
+	if ok {
+		return is[idx]
+	}
+	return 0
+}
+
+func peekTail(is []int, q *Queue) int {
+	idx, ok := q.PeekTail()
 	if ok {
 		return is[idx]
 	}
