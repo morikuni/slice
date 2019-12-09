@@ -1,4 +1,4 @@
-package slice
+package queue
 
 type Queue struct {
 	n     int
@@ -6,7 +6,7 @@ type Queue struct {
 	l     int
 }
 
-func NewQueue(n int) *Queue {
+func New(n int) *Queue {
 	return &Queue{n: n}
 }
 

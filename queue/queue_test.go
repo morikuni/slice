@@ -1,36 +1,38 @@
-package slice
+package queue
 
 import (
 	"testing"
+
+	"github.com/morikuni/slice/internal/assert"
 )
 
 func TestQueue(t *testing.T) {
 	is := make([]int, 3)
-	q := NewQueue(len(is))
+	q := New(len(is))
 
 	pushTail(is, q, 1)
 	pushHead(is, q, 2)
 	pushTail(is, q, 3)
 	pushHead(is, q, 4)
 
-	assertEqual(t, 3, q.Len())
+	assert.Equal(t, 3, q.Len())
 
-	assertEqual(t, 2, peekHead(is, q))
-	assertEqual(t, 3, peekTail(is, q))
-	assertEqual(t, 2, popHead(is, q))
-	assertEqual(t, 3, popTail(is, q))
-	assertEqual(t, 1, popHead(is, q))
-	assertEqual(t, 0, popTail(is, q))
+	assert.Equal(t, 2, peekHead(is, q))
+	assert.Equal(t, 3, peekTail(is, q))
+	assert.Equal(t, 2, popHead(is, q))
+	assert.Equal(t, 3, popTail(is, q))
+	assert.Equal(t, 1, popHead(is, q))
+	assert.Equal(t, 0, popTail(is, q))
 
 	pushTail(is, q, 5)
 	pushTail(is, q, 6)
 
-	assertEqual(t, 2, q.Len())
+	assert.Equal(t, 2, q.Len())
 
-	assertEqual(t, 6, popTail(is, q))
-	assertEqual(t, 5, popTail(is, q))
+	assert.Equal(t, 6, popTail(is, q))
+	assert.Equal(t, 5, popTail(is, q))
 
-	assertEqual(t, 0, q.Len())
+	assert.Equal(t, 0, q.Len())
 }
 
 func pushHead(is []int, q *Queue, val int) {
