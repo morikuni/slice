@@ -7,24 +7,35 @@ import (
 	"github.com/morikuni/slice/queue"
 )
 
+// Pool is used with any types of slices.
+// It calculates an index of slice for each operation.
 type Pool struct {
 	queue    *queue.Queue
 	timeouts []time.Time
 	conf     *config
 }
 
-func New(max int, opts ...Option) *Pool {
+// New creates a new Pool from size and options.
+// The size configures the maximum number of the idle elements.
+// Basically, the size is the length of the slice managed by pool.
+func New(size int, opts ...Option) *Pool {
 	return &Pool{
-		queue:    queue.New(max),
-		timeouts: make([]time.Time, max),
+		queue:    queue.New(size),
+		timeouts: make([]time.Time, size),
 		conf:     evaluateOptions(opts),
 	}
 }
 
+// Get returns an index of the latest idle element.
+// If the second value was false, it means there is
+// no idle element in the pool.
 func (p *Pool) Get() (int, bool) {
 	return p.queue.PopTail()
 }
 
+// Put returns an index of the slice where idle element must be put.
+// If the second value was false, it means there is no room
+// for the idle element.
 func (p *Pool) Put() (int, bool) {
 	idx, ok := p.queue.PushTail()
 	if !ok {
@@ -38,11 +49,15 @@ func (p *Pool) Put() (int, bool) {
 	return idx, true
 }
 
-var longEnough = time.Date(9999, 12, 31, 0, 0, 0, 0, time.UTC)
+var longEnough = 24 * time.Hour
 
-func (p *Pool) CloseIdle() (idx int, shouldClean bool, next time.Time) {
+// CloseIdle returns an index of the oldest idle element that should be closed.
+// If the second value was false, it means there is no idle element should be closed.
+// If there was no IdleTimeout option, it always returns false.
+// The third value is the time when this function may return true again.
+func (p *Pool) CloseIdle() (idx int, shouldClose bool, next time.Time) {
 	if p.conf.idleTimeout == 0 {
-		return 0, false, longEnough
+		return 0, false, p.conf.nowFunc().Add(longEnough)
 	}
 
 	idx, ok := p.queue.PeekHead()

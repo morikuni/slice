@@ -1,15 +1,23 @@
 package queue
 
+// Queue is used with any types of slices.
+// It calculates an index of slice for each operation.
 type Queue struct {
 	n     int
 	start int
 	l     int
 }
 
-func New(n int) *Queue {
-	return &Queue{n: n}
+// New creates a new Queue from size and options.
+// The size configures the maximum number of the elements.
+// Basically, the size is the length of the slice managed by queue.
+func New(size int, opts ...Option) *Queue {
+	return &Queue{n: size}
 }
 
+// PushHead returns the head index of the slice where element must be put.
+// If the second value was false, it means there is no room
+// for the element.
 func (q *Queue) PushHead() (int, bool) {
 	if q.l == q.n {
 		return 0, false
@@ -20,6 +28,9 @@ func (q *Queue) PushHead() (int, bool) {
 	return q.start, true
 }
 
+// PushTail returns the tail index of the slice where element must be put.
+// If the second value was false, it means there is no room
+// for the element.
 func (q *Queue) PushTail() (int, bool) {
 	if q.l == q.n {
 		return 0, false
@@ -30,10 +41,14 @@ func (q *Queue) PushTail() (int, bool) {
 	return idx, true
 }
 
+// Len returns the length of the queue.
 func (q *Queue) Len() int {
 	return q.l
 }
 
+// PopHead returns an index of the head element.
+// If the second value was false, it means there is
+// no idle element in the pool.
 func (q *Queue) PopHead() (int, bool) {
 	idx, ok := q.PeekHead()
 	if !ok {
@@ -45,6 +60,9 @@ func (q *Queue) PopHead() (int, bool) {
 	return idx, true
 }
 
+// PopTail returns an index of the tail element.
+// If the second value was false, it means there is
+// no idle element in the pool.
 func (q *Queue) PopTail() (int, bool) {
 	idx, ok := q.PeekTail()
 	if !ok {
@@ -55,6 +73,7 @@ func (q *Queue) PopTail() (int, bool) {
 	return idx, true
 }
 
+// PopHead is the same as PopHead but it does not modify the queue.
 func (q *Queue) PeekHead() (int, bool) {
 	if q.l == 0 {
 		return 0, false
@@ -63,6 +82,7 @@ func (q *Queue) PeekHead() (int, bool) {
 	return q.start, true
 }
 
+// PopHead is the same as PopTail but it does not modify the queue.
 func (q *Queue) PeekTail() (int, bool) {
 	if q.l == 0 {
 		return 0, false

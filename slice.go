@@ -5,15 +5,19 @@ import (
 	"sort"
 )
 
-type Swap func(i, j int)
+// SwapFunc represents a function that swaps elements
+// at index i and j.
+type SwapFunc func(i, j int)
 
-func AutoSwap(slice interface{}) Swap {
+// AutoSwap create SwapFunc from any types of slices.
+// It panics when given type is not a slice.
+func AutoSwap(slice interface{}) SwapFunc {
 	return reflect.Swapper(slice)
 }
 
 type stdInterface struct {
 	n    int
-	swap func(i, j int)
+	swap SwapFunc
 	less func(i, j int) bool
 }
 
@@ -29,11 +33,15 @@ func (s *stdInterface) Swap(i, j int) {
 	s.swap(i, j)
 }
 
-func Sort(n int, swap Swap, less func(i, j int) bool) {
+// Sort sorts elements in slice.
+func Sort(n int, swap SwapFunc, less func(i, j int) bool) {
 	sort.Sort(&stdInterface{n, swap, less})
 }
 
-func Remove(n int, swap Swap, remove func(i int) bool) int {
+// Remove moves elements matched function remove to the tail of slice.
+// It returns an index of the head element not matched function remove.
+// Remove keeps order of the original elements.
+func Remove(n int, swap SwapFunc, remove func(i int) bool) int {
 	var searchFrom int
 	for i := 0; i < n; i++ {
 		if remove(i) {
