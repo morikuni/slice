@@ -1,4 +1,4 @@
-package queue
+package ringbuf
 
 import (
 	"testing"
@@ -6,7 +6,7 @@ import (
 	"github.com/morikuni/slice/internal/assert"
 )
 
-func TestQueue(t *testing.T) {
+func TestBuffer(t *testing.T) {
 	is := make([]int, 3)
 	q := New(len(is))
 
@@ -35,21 +35,21 @@ func TestQueue(t *testing.T) {
 	assert.Equal(t, 0, q.Len())
 }
 
-func pushHead(is []int, q *Queue, val int) {
+func pushHead(is []int, q *Buffer, val int) {
 	idx, ok := q.PushHead()
 	if ok {
 		is[idx] = val
 	}
 }
 
-func pushTail(is []int, q *Queue, val int) {
+func pushTail(is []int, q *Buffer, val int) {
 	idx, ok := q.PushTail()
 	if ok {
 		is[idx] = val
 	}
 }
 
-func popHead(is []int, q *Queue) int {
+func popHead(is []int, q *Buffer) int {
 	idx, ok := q.PopHead()
 	if ok {
 		return is[idx]
@@ -57,7 +57,7 @@ func popHead(is []int, q *Queue) int {
 	return 0
 }
 
-func popTail(is []int, q *Queue) int {
+func popTail(is []int, q *Buffer) int {
 	idx, ok := q.PopTail()
 	if ok {
 		return is[idx]
@@ -65,7 +65,7 @@ func popTail(is []int, q *Queue) int {
 	return 0
 }
 
-func peekHead(is []int, q *Queue) int {
+func peekHead(is []int, q *Buffer) int {
 	idx, ok := q.PeekHead()
 	if ok {
 		return is[idx]
@@ -73,7 +73,7 @@ func peekHead(is []int, q *Queue) int {
 	return 0
 }
 
-func peekTail(is []int, q *Queue) int {
+func peekTail(is []int, q *Buffer) int {
 	idx, ok := q.PeekTail()
 	if ok {
 		return is[idx]

@@ -4,13 +4,13 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/morikuni/slice/queue"
+	"github.com/morikuni/slice/ringbuf"
 )
 
-// Pool is used with any types of slices.
+// Pool represents object pool used with any types of slices.
 // It calculates an index of slice for each operation.
 type Pool struct {
-	queue    *queue.Queue
+	buffer   *ringbuf.Buffer
 	timeouts []time.Time
 	conf     *config
 }
@@ -20,7 +20,7 @@ type Pool struct {
 // Basically, the size is the length of the slice managed by pool.
 func New(size int, opts ...Option) *Pool {
 	return &Pool{
-		queue:    queue.New(size),
+		buffer:   ringbuf.New(size),
 		timeouts: make([]time.Time, size),
 		conf:     evaluateOptions(opts),
 	}
@@ -30,14 +30,14 @@ func New(size int, opts ...Option) *Pool {
 // If the second value was false, it means there is
 // no idle element in the pool.
 func (p *Pool) Get() (int, bool) {
-	return p.queue.PopTail()
+	return p.buffer.PopTail()
 }
 
 // Put returns an index of the slice where idle element must be put.
 // If the second value was false, it means there is no room
 // for the idle element.
 func (p *Pool) Put() (int, bool) {
-	idx, ok := p.queue.PushTail()
+	idx, ok := p.buffer.PushTail()
 	if !ok {
 		return 0, false
 	}
@@ -60,12 +60,12 @@ func (p *Pool) CloseIdle() (idx int, shouldClose bool, next time.Time) {
 		return 0, false, p.conf.nowFunc().Add(longEnough)
 	}
 
-	idx, ok := p.queue.PeekHead()
+	idx, ok := p.buffer.PeekHead()
 	if !ok {
 		return 0, false, p.timeout()
 	}
 
-	l := p.queue.Len()
+	l := p.buffer.Len()
 	if l == 0 {
 		return 0, false, p.timeout()
 	}
@@ -78,7 +78,7 @@ func (p *Pool) CloseIdle() (idx int, shouldClose bool, next time.Time) {
 		return 0, false, p.timeouts[idx]
 	}
 
-	idx2, ok2 := p.queue.PopHead()
+	idx2, ok2 := p.buffer.PopHead()
 	if idx != idx2 || ok != ok2 {
 		panic(fmt.Errorf("race condition detected. please use *slice.Pool with mutex: dx1=%v idx2=%v ok1=%v ok2=%v", idx, idx2, ok, ok2))
 	}

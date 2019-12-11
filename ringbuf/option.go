@@ -1,4 +1,4 @@
-package queue
+package ringbuf
 
 // Option is optional parameter for New function.
 // This was created for the future extension.
