@@ -1,6 +1,8 @@
 package pool
 
 import (
+	"errors"
+	"fmt"
 	"time"
 )
 
@@ -37,7 +39,7 @@ type config struct {
 	min         int
 }
 
-func evaluateOptions(opts []Option) *config {
+func evaluateOptions(opts []Option) (*config, error) {
 	conf := &config{
 		nowFunc:     time.Now,
 		idleTimeout: 0,
@@ -48,5 +50,17 @@ func evaluateOptions(opts []Option) *config {
 		o(conf)
 	}
 
-	return conf
+	if conf.nowFunc == nil {
+		return nil, errors.New("nowFunc is nil")
+	}
+
+	if conf.idleTimeout < 0 {
+		return nil, fmt.Errorf("idle timeout must not be less than 0 but got %d", conf.idleTimeout)
+	}
+
+	if conf.min < 0 {
+		return nil, fmt.Errorf("min must not be less than 0 but got %d", conf.min)
+	}
+
+	return conf, nil
 }

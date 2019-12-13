@@ -8,7 +8,8 @@ import (
 
 func TestBuffer(t *testing.T) {
 	is := make([]int, 3)
-	q := New(len(is))
+	q, err := New(len(is))
+	assert.Equal(t, nil, err)
 
 	pushTail(is, q, 1)
 	pushHead(is, q, 2)

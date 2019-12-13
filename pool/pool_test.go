@@ -23,11 +23,12 @@ func setNow(t time.Time) {
 func TestPool(t *testing.T) {
 	const timeout = time.Second
 
-	pool := New(5,
+	pool, err := New(5,
 		MinIdle(2),
 		IdleTimeout(timeout),
 		withNowFunc(nowFunc),
 	)
+	assert.Equal(t, nil, err)
 
 	checkGet(t, pool, 0, false)
 	checkCloseIdle(t, pool, 0, false, base.Add(timeout))

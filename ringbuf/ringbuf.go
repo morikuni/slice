@@ -1,5 +1,9 @@
 package ringbuf
 
+import (
+	"fmt"
+)
+
 // Buffer represents ring buffer used with any types of slices.
 // It calculates an index of slice for each operation.
 type Buffer struct {
@@ -11,8 +15,11 @@ type Buffer struct {
 // New creates a new Buffer from size and options.
 // The size configures the maximum number of the elements.
 // Basically, the size is the length of the slice managed by buffer.
-func New(size int, opts ...Option) *Buffer {
-	return &Buffer{n: size}
+func New(size int, opts ...Option) (*Buffer, error) {
+	if size < 0 {
+		return nil, fmt.Errorf("size must be greater than 0 but got %d", size)
+	}
+	return &Buffer{n: size}, nil
 }
 
 // PushHead returns the head index of the slice where element must be put.

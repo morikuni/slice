@@ -18,12 +18,22 @@ type Pool struct {
 // New creates a new Pool from size and options.
 // The size configures the maximum number of the idle elements.
 // Basically, the size is the length of the slice managed by pool.
-func New(size int, opts ...Option) *Pool {
-	return &Pool{
-		buffer:   ringbuf.New(size),
-		timeouts: make([]time.Time, size),
-		conf:     evaluateOptions(opts),
+func New(size int, opts ...Option) (*Pool, error) {
+	buf, err := ringbuf.New(size)
+	if err != nil {
+		return nil, err
 	}
+
+	conf, err := evaluateOptions(opts)
+	if err != nil {
+		return nil, err
+	}
+
+	return &Pool{
+		buffer:   buf,
+		timeouts: make([]time.Time, size),
+		conf:     conf,
+	}, nil
 }
 
 // Get returns an index of the latest idle element.
