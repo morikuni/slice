@@ -24,7 +24,8 @@ func (q *Buffer) PushHead() (int, bool) {
 	}
 
 	q.start = (q.start + q.n - 1) % q.n
-	q.l += 1
+	q.l++
+
 	return q.start, true
 }
 
@@ -37,7 +38,8 @@ func (q *Buffer) PushTail() (int, bool) {
 	}
 
 	idx := (q.start + q.l) % q.n
-	q.l += 1
+	q.l++
+
 	return idx, true
 }
 
@@ -56,7 +58,8 @@ func (q *Buffer) PopHead() (int, bool) {
 	}
 
 	q.start = (q.start + 1) % q.n
-	q.l -= 1
+	q.l--
+
 	return idx, true
 }
 
@@ -69,7 +72,8 @@ func (q *Buffer) PopTail() (int, bool) {
 		return 0, false
 	}
 
-	q.l -= 1
+	q.l--
+
 	return idx, true
 }
 
@@ -89,5 +93,6 @@ func (q *Buffer) PeekTail() (int, bool) {
 	}
 
 	idx := (q.start + q.l - 1) % q.n
+
 	return idx, true
 }

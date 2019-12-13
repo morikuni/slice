@@ -49,3 +49,7 @@ jobs:
           reporter: github-check
           golangci_lint_flags: |
             --enable-all --exclude-use-default
+            -D lll
+            -D funlen
+            -D gochecknoglobals
+

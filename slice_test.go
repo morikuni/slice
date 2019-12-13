@@ -92,6 +92,8 @@ func TestMoveLeft(t *testing.T) {
 	}
 
 	for name, tc := range cases {
+		tc := tc
+
 		t.Run(name, func(t *testing.T) {
 			is, swap, left := tc.gen()
 			got := is[:MoveLeft(len(is), swap, left)]
@@ -105,10 +107,13 @@ func bench(b *testing.B, f func(b *testing.B, slice []int)) {
 	size := []int{10, 100, 1000, 10000}
 
 	for _, s := range size {
+		s := s
 		slice := make([]int, s)
+
 		for i := 0; i < s; i++ {
 			slice[i] = i + 1
 		}
+
 		b.Run(fmt.Sprint(s), func(b *testing.B) {
 			cp := make([]int, s)
 			for i := 0; i < b.N; i++ {

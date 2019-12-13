@@ -54,6 +54,7 @@ func popHead(is []int, q *Buffer) int {
 	if ok {
 		return is[idx]
 	}
+
 	return 0
 }
 
@@ -62,6 +63,7 @@ func popTail(is []int, q *Buffer) int {
 	if ok {
 		return is[idx]
 	}
+
 	return 0
 }
 
@@ -70,6 +72,7 @@ func peekHead(is []int, q *Buffer) int {
 	if ok {
 		return is[idx]
 	}
+
 	return 0
 }
 
@@ -78,5 +81,6 @@ func peekTail(is []int, q *Buffer) int {
 	if ok {
 		return is[idx]
 	}
+
 	return 0
 }

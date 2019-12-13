@@ -43,24 +43,30 @@ func Sort(n int, swap SwapFunc, less func(i, j int) bool) {
 // MoveLeft keeps order of the original elements matched left.
 func MoveLeft(n int, swap SwapFunc, left func(i int) bool) int {
 	var searchFrom int
+
 	for i := 0; i < n; i++ {
 		if left(i) {
 			if searchFrom <= i {
 				searchFrom = i + 1
 			}
+
 			swapped := false
+
 			for j := searchFrom; j < n; j++ {
 				if !left(j) {
 					swap(i, j)
 					searchFrom = j + 1
 					swapped = true
+
 					break
 				}
 			}
+
 			if !swapped {
 				return i
 			}
 		}
 	}
+
 	return n
 }
