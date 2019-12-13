@@ -38,19 +38,19 @@ func Sort(n int, swap SwapFunc, less func(i, j int) bool) {
 	sort.Sort(&stdInterface{n, swap, less})
 }
 
-// Remove moves elements matched function remove to the tail of slice.
-// It returns an index of the head element not matched function remove.
-// Remove keeps order of the original elements.
-func Remove(n int, swap SwapFunc, remove func(i int) bool) int {
+// MoveLeft moves elements matched function left to the left side of the slice.
+// It returns an index of the smallest element not matched left.
+// MoveLeft keeps order of the original elements matched left.
+func MoveLeft(n int, swap SwapFunc, left func(i int) bool) int {
 	var searchFrom int
 	for i := 0; i < n; i++ {
-		if remove(i) {
+		if left(i) {
 			if searchFrom <= i {
 				searchFrom = i + 1
 			}
 			swapped := false
 			for j := searchFrom; j < n; j++ {
-				if !remove(j) {
+				if !left(j) {
 					swap(i, j)
 					searchFrom = j + 1
 					swapped = true

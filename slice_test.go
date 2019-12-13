@@ -17,7 +17,7 @@ func assertEqual(t testing.TB, want, got interface{}) bool {
 	return true
 }
 
-func TestRemove(t *testing.T) {
+func TestMoveLeft(t *testing.T) {
 	cases := map[string]struct {
 		gen func() ([]int, func(i, j int), func(i int) bool)
 
@@ -93,8 +93,8 @@ func TestRemove(t *testing.T) {
 
 	for name, tc := range cases {
 		t.Run(name, func(t *testing.T) {
-			is, swap, remove := tc.gen()
-			got := is[:Remove(len(is), swap, remove)]
+			is, swap, left := tc.gen()
+			got := is[:MoveLeft(len(is), swap, left)]
 
 			assertEqual(t, tc.want, got)
 		})
@@ -119,9 +119,9 @@ func bench(b *testing.B, f func(b *testing.B, slice []int)) {
 	}
 }
 
-func BenchmarkRemove(b *testing.B) {
+func BenchmarkMoveLeft(b *testing.B) {
 	bench(b, func(b *testing.B, slice []int) {
-		x := slice[:Remove(len(slice), func(i, j int) { slice[i], slice[j] = slice[j], slice[i] }, func(i int) bool {
+		x := slice[:MoveLeft(len(slice), func(i, j int) { slice[i], slice[j] = slice[j], slice[i] }, func(i int) bool {
 			return slice[i]%2 == 1
 		})]
 		if want, got := len(slice), x[len(x)-1]; want != got {
