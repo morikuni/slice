@@ -5,6 +5,7 @@ import (
 	"testing"
 )
 
+// Equal asserts equality.
 func Equal(t testing.TB, want, got interface{}) bool {
 	t.Helper()
 

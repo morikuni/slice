@@ -19,6 +19,7 @@ func New(size int, opts ...Option) (*Buffer, error) {
 	if size < 0 {
 		return nil, fmt.Errorf("size must be greater than 0 but got %d", size)
 	}
+
 	return &Buffer{n: size}, nil
 }
 
@@ -84,7 +85,7 @@ func (q *Buffer) PopTail() (int, bool) {
 	return idx, true
 }
 
-// PopHead is the same as PopHead but it does not modify the buffer.
+// PeekHead is the same as PopHead but it does not modify the buffer.
 func (q *Buffer) PeekHead() (int, bool) {
 	if q.l == 0 {
 		return 0, false
@@ -93,7 +94,7 @@ func (q *Buffer) PeekHead() (int, bool) {
 	return q.start, true
 }
 
-// PopHead is the same as PopTail but it does not modify the buffer.
+// PeekTail is the same as PopTail but it does not modify the buffer.
 func (q *Buffer) PeekTail() (int, bool) {
 	if q.l == 0 {
 		return 0, false
