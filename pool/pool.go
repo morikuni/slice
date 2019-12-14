@@ -81,7 +81,8 @@ func (p *Pool) CloseIdle() (idx int, shouldClose bool, next time.Time) {
 	}
 
 	if l <= p.conf.min {
-		return 0, false, p.timeouts[idx]
+		// return p.timeout() instead of p.timeouts[idx] to infinite loop.
+		return 0, false, p.timeout()
 	}
 
 	if p.timeouts[idx].After(p.conf.nowFunc()) {
