@@ -48,7 +48,7 @@ func TestPool(t *testing.T) {
 	checkCloseIdle(t, pool, 0, true, base.Add(timeout))
 
 	// no close because min = 2
-	checkCloseIdle(t, pool, 0, false, base.Add(timeout))
+	checkCloseIdle(t, pool, 0, false, base.Add(3*timeout)) // setNow(2) + idleTimeout(1)
 
 	checkPut(t, pool, 3, true)
 	checkPut(t, pool, 4, true)
