@@ -64,4 +64,5 @@ jobs:
             -D lll
             -D funlen
             -D gochecknoglobals
+            -D gomnd
 

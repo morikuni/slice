@@ -2,20 +2,10 @@ package slice
 
 import (
 	"fmt"
-	"reflect"
 	"testing"
+
+	"github.com/morikuni/slice/internal/assert"
 )
-
-func assertEqual(t testing.TB, want, got interface{}) bool {
-	t.Helper()
-
-	if !reflect.DeepEqual(want, got) {
-		t.Logf("not equal\nwant=%v\ngot=%v", want, got)
-		return false
-	}
-
-	return true
-}
 
 func TestMoveLeft(t *testing.T) {
 	cases := map[string]struct {
@@ -98,7 +88,7 @@ func TestMoveLeft(t *testing.T) {
 			is, swap, left := tc.gen()
 			got := is[:MoveLeft(len(is), swap, left)]
 
-			assertEqual(t, tc.want, got)
+			assert.Equal(t, tc.want, got)
 		})
 	}
 }
@@ -155,4 +145,41 @@ func BenchmarkAutoSwap(b *testing.B) {
 			b.Errorf("last element mismatch: want=%d got=%d", want, got)
 		}
 	})
+}
+
+func TestReverse(t *testing.T) {
+	cases := map[string]struct {
+		s []int
+
+		want []int
+	}{
+		"size odd": {
+			s:    []int{1, 5, 2, 4, 3},
+			want: []int{3, 4, 2, 5, 1},
+		},
+		"size even": {
+			s:    []int{1, 5, 2, 6, 4, 3},
+			want: []int{3, 4, 6, 2, 5, 1},
+		},
+		"size 1": {
+			s:    []int{1},
+			want: []int{1},
+		},
+		"size 0": {
+			s:    []int{},
+			want: []int{},
+		},
+	}
+
+	for name, tc := range cases {
+		tc := tc
+
+		t.Run(name, func(t *testing.T) {
+			s := tc.s
+			Reverse(len(s), func(i, j int) {
+				s[i], s[j] = s[j], s[i]
+			})
+			assert.Equal(t, tc.want, s)
+		})
+	}
 }

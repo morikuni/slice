@@ -70,3 +70,9 @@ func MoveLeft(n int, swap SwapFunc, left func(i int) bool) int {
 
 	return n
 }
+
+func Reverse(n int, swap SwapFunc) {
+	for i := 0; i < n/2; i++ {
+		swap(i, n-1-i)
+	}
+}
